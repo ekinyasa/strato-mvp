@@ -18,6 +18,26 @@
     .results { margin-top: 2rem; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: none; }
     .results h4 { margin-top: 0; }
     ul { padding-left: 1.2rem; }
+
+    .metric-box {
+      background: white;
+      padding: 1.2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      width: 220px;
+      text-align: center;
+    }
+    .metric-box h5 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+      color: #1e293b;
+    }
+    .metric-box p {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin: 0;
+      color: #0f172a;
+    }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -61,8 +81,28 @@
       <h4>Trend Zaman Çizelgesi:</h4>
       <canvas id="trendsChart" width="100%" height="60"></canvas>
     </section>
+
+  <section class="results" id="volumeSection" style="display: none;">
+      <h4>Hacim ve Ticari Değer:</h4>
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        <div class="metric-box">
+          <h5>Aylık Arama Hacmi</h5>
+          <p id="volumeValue">-</p>
+        </div>
+        <div class="metric-box">
+          <h5>Tıklama Başı Maliyet (CPC)</h5>
+          <p id="cpcValue">-</p>
+        </div>
+        <div class="metric-box">
+          <h5>SEO Zorluğu</h5>
+          <p id="seoValue">-</p>
+        </div>
+      </div>
+    </section>
     
   </main>
+
+  
   <footer>
     STRATO MVP | ekinyasa.online – 2025
   </footer>
@@ -153,7 +193,13 @@ async function showResults() {
   }
 
   resultsSection.style.display = 'block';
-  await loadTrends(input);
+  await loadTrends(input
+
+// Simülasyon verisi
+document.getElementById("volumeValue").textContent = "90.500";
+document.getElementById("cpcValue").textContent = "$0.62";
+document.getElementById("seoValue").textContent = "35 / 100";
+document.getElementById("volumeSection").style.display = "block";
 }
 
 
