@@ -229,13 +229,15 @@ async function loadTrends(keyword) {
   const chartCanvas = document.getElementById('trendsChart');
 
   try {
+    console.log("Trends data:", data);
     const response = await fetch(`https://strato-mvp.onrender.com/trends?q=${encodeURIComponent(keyword)}`);
     const data = await response.json();
 
-    if (!data || data.length === 0 || data.error) {
-      trendsSection.style.display = "none";
-      return;
-    }
+   if (!data || data.length === 0 || data.error) {
+    trendsSection.querySelector("canvas").style.display = "none";
+    trendsSection.innerHTML = "<p style='color:red;'>Trend verisi alınamadı. Google API limiti aşıldı veya sonuç bulunamadı.</p>";
+    return;
+  }
 
     const labels = data.map(item => item.date);
     const values = data.map(item => item.value);
