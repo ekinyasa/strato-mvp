@@ -49,7 +49,8 @@
   </header>
   <main>
     <section class="search-section">
-      <input type="text" id="keywordInput" placeholder="Bir kelime ya da cümle girin...">
+      <input type="text" id="keywordInput" list="searchHistory" placeholder="Bir kelime ya da cümle girin...">
+      <datalist id="searchHistory"></datalist>
       <button onclick="showResults()">Veriyi Görselleştir</button>
     </section>
 
@@ -255,6 +256,55 @@ async function loadTrends(keyword) {
   }
 }
   </script>
+
+<script>
+  // ENTER tuşuyla arama, ESC tuşuyla kutuyu temizleme
+    document.getElementById("keywordInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        showResults(); // Arama yap
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        this.value = ""; // Kutuyu temizle
+      }
+    });
+
+  function saveToHistory(term) {
+      if (!term) return;
+      let history = JSON.parse(localStorage.getItem("strato_history") || "[]");
+      if (!history.includes(term)) {
+        history.unshift(term); // en sona değil, en başa ekle
+        if (history.length > 10) history = history.slice(0, 10); // sadece son 10 kayıt
+        localStorage.setItem("strato_history", JSON.stringify(history));
+      }
+    }
+    
+    function loadSearchSuggestions() {
+      const history = JSON.parse(localStorage.getItem("strato_history") || "[]");
+      const dataList = document.getElementById("searchHistory");
+      dataList.innerHTML = "";
+      history.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item;
+        dataList.appendChild(option);
+      });
+    }
+    
+    // Sayfa yüklendiğinde geçmişi göster
+    window.addEventListener("DOMContentLoaded", loadSearchSuggestions);
+    
+    // Arama yapıldığında geçmişe kaydet
+    async function showResults() {
+      const input = document.getElementById('keywordInput').value.trim();
+      saveToHistory(input);
+      loadSearchSuggestions();
+      
+      // ... senin mevcut showResults içeriğin buradan devam eder ...
+    }
+</script>
+
+  
 </body>
 </body>
 </html>
