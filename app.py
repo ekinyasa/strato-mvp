@@ -5,7 +5,7 @@ import json
 from pytrends.request import TrendReq
 
 app = Flask(__name__)
-CORS(app)  # Tüm kaynaklara CORS izni verir
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route("/autocomplete", methods=["GET"])
 def autocomplete():
