@@ -124,6 +124,9 @@ const prefixes = ["kim", "nasıl", "neden", "ne zaman", "nedir", "nereli", "kaç
 
 async function showResults() {
   const input = document.getElementById('keywordInput').value.trim();
+  saveToHistory(input);
+  loadSearchSuggestions();
+
   const resultsSection = document.getElementById('results');
   const list = document.getElementById('resultsList');
   list.innerHTML = '';
@@ -194,7 +197,7 @@ async function showResults() {
   }
 
   resultsSection.style.display = 'block';
-  await loadTrends(input
+  await loadTrends(input);
 
 // Simülasyon verisi
 document.getElementById("volumeValue").textContent = "90.500";
@@ -293,15 +296,7 @@ async function loadTrends(keyword) {
     
     // Sayfa yüklendiğinde geçmişi göster
     window.addEventListener("DOMContentLoaded", loadSearchSuggestions);
-    
-    // Arama yapıldığında geçmişe kaydet
-    async function showResults() {
-      const input = document.getElementById('keywordInput').value.trim();
-      saveToHistory(input);
-      loadSearchSuggestions();
-      
-      // ... senin mevcut showResults içeriğin buradan devam eder ...
-    }
+
 </script>
 
   
