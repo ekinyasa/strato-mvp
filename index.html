@@ -173,6 +173,11 @@ async function loadTrends(keyword) {
     const labels = data.map(item => item.date);
     const values = data.map(item => item.value);
 
+    // ⬇️ Buraya bu satırı ekliyoruz
+    if (Chart.getChart(chartCanvas)) {
+      Chart.getChart(chartCanvas).destroy();
+    }
+
     new Chart(chartCanvas, {
       type: 'line',
       data: {
