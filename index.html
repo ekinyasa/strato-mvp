@@ -144,6 +144,9 @@ async function showResults() {
 
   if (!input) {
     alert("Lütfen bir kelime ya da cümle girin.");
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("keywordInput").disabled = false;
+    document.querySelector(".search-section button").disabled = false;
     return;
   }
 
@@ -269,6 +272,7 @@ async function loadTrends(keyword) {
     
  } catch (err) {
     console.error("Trend verisi alınamadı:", err);
+    trendsSection.querySelector("canvas").style.display = "none";
     trendsSection.innerHTML = "<p style='color:red;'>Trend verisi alınamadı. Lütfen daha sonra tekrar deneyin.</p>";
   }
 }
