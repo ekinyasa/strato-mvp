@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STRATO MVP Mockup</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }
+    header { background-color: #1e293b; color: white; padding: 1rem 2rem; text-align: center; }
+    main { padding: 2rem; }
+    .search-section { text-align: center; margin-bottom: 3rem; }
+    .search-section input { padding: 0.8rem; width: 50%; border-radius: 8px; border: 1px solid #ccc; }
+    .search-section button { padding: 0.8rem 1.5rem; background-color: #1e293b; color: white; border: none; border-radius: 8px; cursor: pointer; margin-left: 1rem; }
+    .modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+    .module-box { background-color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .module-box h3 { margin-top: 0; }
+    footer { text-align: center; padding: 2rem; color: #999; font-size: 0.9rem; }
+    .results { margin-top: 2rem; background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: none; }
+    .results h4 { margin-top: 0; }
+    ul { padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>STRATO - Stratejik Arama Analiz Platformu</h1>
+  </header>
+  <main>
+    <section class="search-section">
+      <input type="text" id="keywordInput" placeholder="Bir kelime ya da cümle girin...">
+      <button onclick="showResults()">Veriyi Görselleştir</button>
+    </section>
+
+    <section class="modules">
+      <div class="module-box">
+        <h3>Soru Haritası</h3>
+        <p>Autocomplete ve soru biçimlerini analiz eder. "Neden", "Nasıl", "Kim", "Çözüm" gibi kalıplarla sınıflandırır.</p>
+      </div>
+      <div class="module-box">
+        <h3>Trend Zaman Çizelgesi</h3>
+        <p>Google Trends üzerinden zamana ve bölgelere göre sorgu yoğunluğunu grafikleştirir.</p>
+      </div>
+      <div class="module-box">
+        <h3>Hacim ve Ticari Değer</h3>
+        <p>Aylık arama hacmi, CPC ve SEO zorluğu gibi verileri sunar.</p>
+      </div>
+      <div class="module-box">
+        <h3>Rakip & Gündem Analizi</h3>
+        <p>Benzer içerik üreten siteleri, siyasi partilerin içeriklerini, SEO hareketlerini listeler.</p>
+      </div>
+    </section>
+
+    <section class="results" id="results">
+      <h4>Simüle Edilmiş Sonuçlar:</h4>
+      <ul id="resultsList"></ul>
+    </section>
+  </main>
+  <footer>
+    STRATO MVP | ekinyasa.online – 2025
+  </footer>
+
+  <script>
+    function showResults() {
+      const input = document.getElementById('keywordInput').value;
+      const results = document.getElementById('results');
+      const list = document.getElementById('resultsList');
+      list.innerHTML = '';
+
+      if (!input.trim()) {
+        alert("Lütfen bir kelime ya da cümle girin.");
+        return;
+      }
+
+      const mockData = [
+        `"${input}" ile başlayan sorular:`,
+        `- ${input} neden önemli?`,
+        `- ${input} nasıl anlaşılır?`,
+        `- ${input} hakkında en çok sorulanlar`,
+        `- ${input} ile ilgili güncel trendler` 
+      ];
+
+      mockData.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+      });
+
+      results.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
