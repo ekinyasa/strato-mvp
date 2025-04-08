@@ -60,81 +60,91 @@
 
   <script>
     const keywordGroups = {
-    "Neden": ["neden", "niçin"],
-    "Nasıl": ["nasıl", "yöntemi", "şekli", "kurulur", "çalışır"],
-    "Kim": ["kim", "kimin", "kimler"],
-    "Ne Zaman": ["ne zaman", "hangi yıl", "hangi tarihte"],
-    "Tanım": ["nedir", "ne demek", "ne işe yarar"],
-    "Nerede": ["nerede", "hangi şehirde", "hangi bölgede"],
-    "Hangi": ["hangi", "hangisi"],
-    "Yaş / Eğitim": ["kaç yaşında", "mezunu", "eğitim", "doğum"]
-  };
+  "Neden": ["neden", "niçin"],
+  "Nasıl": ["nasıl", "yöntemi", "şekli", "kurulur", "çalışır"],
+  "Kim": ["kim", "kimin", "kimler"],
+  "Ne Zaman": ["ne zaman", "hangi yıl", "hangi tarihte"],
+  "Tanım": ["nedir", "ne demek", "ne işe yarar"],
+  "Nerede": ["nerede", "hangi şehirde", "hangi bölgede"],
+  "Hangi": ["hangi", "hangisi"],
+  "Yaş / Eğitim": ["kaç yaşında", "mezunu", "eğitim", "doğum"]
+};
 
-  const prefixes = ["", "kim", "nasıl", "neden", "ne zaman", "nedir", "nereli", "kaç yaşında", "eğitim"];
+const prefixes = ["kim", "nasıl", "neden", "ne zaman", "nedir", "nereli", "kaç yaşında", "eğitim"];
 
-  async function showResults() {
-    const input = document.getElementById('keywordInput').value.trim();
-    const resultsSection = document.getElementById('results');
-    const list = document.getElementById('resultsList');
-    list.innerHTML = '';
-    resultsSection.style.display = 'none';
+async function showResults() {
+  const input = document.getElementById('keywordInput').value.trim();
+  const resultsSection = document.getElementById('results');
+  const list = document.getElementById('resultsList');
+  list.innerHTML = '';
+  resultsSection.style.display = 'none';
 
-    if (!input) {
-      alert("Lütfen bir kelime ya da cümle girin.");
-      return;
-    }
-
-    const allSuggestions = new Set();
-
-    for (const prefix of prefixes) {
-      const query = prefix ? `${input} ${prefix}` : input;
-      try {
-        const response = await fetch(`https://strato-mvp.onrender.com/autocomplete?q=${encodeURIComponent(query)}`);
-        const suggestions = await response.json();
-        suggestions.forEach(s => allSuggestions.add(s.trim()));
-        await new Promise(resolve => setTimeout(resolve, 300)); // Google'dan engel yememek için bekleme
-      } catch (err) {
-        console.error("Veri alınamadı:", err);
-      }
-    }
-
-    if (allSuggestions.size === 0) {
-      list.innerHTML = "<li>Hiç sonuç bulunamadı.</li>";
-      resultsSection.style.display = 'block';
-      return;
-    }
-
-    const categorized = {};
-    allSuggestions.forEach((s) => {
-      let found = false;
-      for (const [group, keywords] of Object.entries(keywordGroups)) {
-        if (keywords.some(k => s.toLowerCase().includes(k))) {
-          if (!categorized[group]) categorized[group] = [];
-          categorized[group].push(s);
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        if (!categorized["Diğer"]) categorized["Diğer"] = [];
-        categorized["Diğer"].push(s);
-      }
-    });
-
-    for (const [group, items] of Object.entries(categorized)) {
-      const groupHeader = document.createElement('li');
-      groupHeader.innerHTML = `<strong>👉 ${group}:</strong>`;
-      list.appendChild(groupHeader);
-
-      items.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = '– ' + item;
-        list.appendChild(li);
-      });
-    }
-
-    resultsSection.style.display = 'block';
+  if (!input) {
+    alert("Lütfen bir kelime ya da cümle girin.");
+    return;
   }
+
+  const allSuggestions = new Set();
+
+  // 1. İlk çıplak sorgu
+  try {
+    const baseRes = await fetch(`https://strato-mvp.onrender.com/autocomplete?q=${encodeURIComponent(input)}`);
+    const baseSuggestions = await baseRes.json();
+    baseSuggestions.forEach(s => allSuggestions.add(s.trim()));
+  } catch (err) {
+    console.error("İlk sorguda hata:", err);
+  }
+
+  // 2. Varyasyonlu sorgular
+  for (const prefix of prefixes) {
+    const query = `${input} ${prefix}`;
+    try {
+      const response = await fetch(`https://strato-mvp.onrender.com/autocomplete?q=${encodeURIComponent(query)}`);
+      const suggestions = await response.json();
+      suggestions.forEach(s => allSuggestions.add(s.trim()));
+      await new Promise(resolve => setTimeout(resolve, 300)); // ban yememek için gecikme
+    } catch (err) {
+      console.error("Varyasyon sorguda hata:", err);
+    }
+  }
+
+  if (allSuggestions.size === 0) {
+    list.innerHTML = "<li>Hiç sonuç bulunamadı.</li>";
+    resultsSection.style.display = 'block';
+    return;
+  }
+
+  const categorized = {};
+  allSuggestions.forEach((s) => {
+    let found = false;
+    for (const [group, keywords] of Object.entries(keywordGroups)) {
+      if (keywords.some(k => s.toLowerCase().includes(k))) {
+        if (!categorized[group]) categorized[group] = [];
+        categorized[group].push(s);
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      if (!categorized["Diğer"]) categorized["Diğer"] = [];
+      categorized["Diğer"].push(s);
+    }
+  });
+
+  for (const [group, items] of Object.entries(categorized)) {
+    const groupHeader = document.createElement('li');
+    groupHeader.innerHTML = `<strong>👉 ${group}:</strong>`;
+    list.appendChild(groupHeader);
+
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = '– ' + item;
+      list.appendChild(li);
+    });
+  }
+
+  resultsSection.style.display = 'block';
+}
   </script>
 </body>
 </body>
