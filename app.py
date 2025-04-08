@@ -37,7 +37,7 @@ def trends():
     try:
         pytrends = TrendReq(hl='tr-TR', tz=180)
 
-        time.sleep(1.5)  # 🔒 Google'a aşırı istek atmamak için bekletme
+        time.sleep(3)  # 🧘 Daha yavaş sorgu → ban riskini azaltır
 
         pytrends.build_payload([keyword], cat=0, timeframe='today 3-m', geo='TR', gprop='')
         df = pytrends.interest_over_time()
@@ -54,7 +54,9 @@ def trends():
         return jsonify(data)
 
     except Exception as e:
+        print("Google Trends hatası:", str(e))
         return jsonify({"error": str(e)}), 500
+
 
 # 🔹 Uygulama başlat
 if __name__ == "__main__":
