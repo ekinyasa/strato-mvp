@@ -73,6 +73,10 @@
       </div>
     </section>
 
+    <div id="loading" style="display:none; text-align:center; font-weight:bold; margin-top:2rem;">
+      <img src="loading.gif"> <br/> lütfen bekleyin...
+    </div>
+        
     <section class="results" id="results">
       <h4>Simüle Edilmiş Sonuçlar:</h4>
       <ul id="resultsList"></ul>
@@ -123,6 +127,11 @@
 const prefixes = ["kim", "nasıl", "neden", "ne zaman", "nedir", "nereli", "kaç yaşında", "eğitim"];
 
 async function showResults() {
+
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("keywordInput").disabled = true;
+  document.querySelector(".search-section button").disabled = true;
+    
   const input = document.getElementById('keywordInput').value.trim();
   saveToHistory(input);
   loadSearchSuggestions();
@@ -204,6 +213,10 @@ document.getElementById("volumeValue").textContent = "90.500";
 document.getElementById("cpcValue").textContent = "$0.62";
 document.getElementById("seoValue").textContent = "35 / 100";
 document.getElementById("volumeSection").style.display = "block";
+
+document.getElementById("loading").style.display = "none";
+document.getElementById("keywordInput").disabled = false;
+document.querySelector(".search-section button").disabled = false;
 }
 
 
@@ -252,10 +265,10 @@ async function loadTrends(keyword) {
     });
 
     trendsSection.style.display = "block";
-
-  } catch (err) {
+    
+ } catch (err) {
     console.error("Trend verisi alınamadı:", err);
-    trendsSection.style.display = "none";
+    trendsSection.innerHTML = "<p style='color:red;'>Trend verisi alınamadı. Lütfen daha sonra tekrar deneyin.</p>";
   }
 }
   </script>
