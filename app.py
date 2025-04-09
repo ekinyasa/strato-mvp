@@ -4,6 +4,8 @@ from pytrends.request import TrendReq
 import requests
 import json
 import time
+import os
+from serpapi import GoogleSearch
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
