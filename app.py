@@ -71,6 +71,29 @@ def get_trends():
         if "429" in str(e):
             return jsonify({"error": "The request failed: Google returned a response with code 429"}), 200
         return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+        
+# 🔹 SerpAPI endpoint        
+@app.route("/serpapi", methods=["GET"])
+def serpapi_data():
+    keyword = request.args.get("q", "")
+    if not keyword:
+        return jsonify({"error": "Anahtar kelime belirtilmedi"}), 400
+
+    try:
+        search = GoogleSearch({
+            "q": keyword,
+            "hl": "tr",
+            "location": "Turkey",
+            "api_key": os.getenv("SERPAPI_KEY")  # alternatif: doğrudan "api_key": "YOUR_KEY"
+        })
+        results = search.get_dict()
+        trends = results.get("related_questions") or []
+
+        return jsonify(trends)
+
+    except Exception as e:
+        return jsonify({"error": f"SerpAPI hatası: {str(e)}"}), 500
+
 
 # 🔹 Uygulama başlat
 if __name__ == "__main__":
