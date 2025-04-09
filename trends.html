@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Trend Grafik Testi</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f8f9fa; }
+    h2 { color: #1e293b; }
+    input, button { padding: 0.5rem 1rem; font-size: 1rem; }
+    #status { margin-top: 1rem; font-weight: bold; color: #e11d48; }
+    canvas { margin-top: 2rem; background: white; border-radius: 8px; padding: 1rem; }
+  </style>
+</head>
+<body>
+  <h2>Google Trends Grafik Testi</h2>
+  <input type="text" id="keyword" placeholder="Anahtar kelime girin">
+  <button onclick="fetchTrend()">Grafiği Göster</button>
+  <div id="status"></div>
+  <canvas id="trendChart" width="600" height="300"></canvas>
+
+  <script>
+    async function fetchTrend() {
+      const keyword = document.getElementById("keyword").value.trim();
+      const status = document.getElementById("status");
+      const canvas = document.getElementById("trendChart");
+
+      if (!keyword) {
+        status.textContent = "Lütfen bir kelime girin.";
+        return;
+      }
+
+      status.textContent = "Yükleniyor...";
+
+      try {
+        const res = await fetch(`https://strato-mvp.onrender.com/trends?q=${encodeURIComponent(keyword)}`);
+        const data = await res.json();
+
+        if (data.error || data.length === 0) {
+          status.textContent = "Veri alınamadı: " + (data.error || "boş veri döndü");
+          return;
+        }
+
+        status.textContent = "Başarıyla yüklendi.";
+
+        const labels = data.map(d => d.date);
+        const values = data.map(d => d.value);
+
+        if (Chart.getChart(canvas)) {
+          Chart.getChart(canvas).destroy();
+        }
+
+        new Chart(canvas, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: `${keyword} için trend`,
+              data: values,
+              borderColor: '#1e40af',
+              backgroundColor: 'rgba(30, 64, 175, 0.1)',
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+
+      } catch (err) {
+        status.textContent = "Hata oluştu: " + err.message;
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
