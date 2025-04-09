@@ -1,4 +1,6 @@
-flask
+Flask
 flask-cors
-requests
 pytrends
+selenium
+python-dotenv
+google-search-results
