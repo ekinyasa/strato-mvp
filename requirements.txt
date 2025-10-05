@@ -1,6 +1,0 @@
-Flask
-flask-cors
-pytrends
-selenium
-python-dotenv
-google-search-results
