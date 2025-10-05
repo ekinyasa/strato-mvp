@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from pytrends.request import TrendReq
 import requests
@@ -7,7 +7,7 @@ import time
 import os
 from serpapi import GoogleSearch
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # 🔹 Autocomplete endpoint
@@ -94,6 +94,9 @@ def serpapi_data():
     except Exception as e:
         return jsonify({"error": f"SerpAPI hatası: {str(e)}"}), 500
 
+@app.get("/")
+def _index():
+    return send_from_directory(app.static_folder, "index.html")
 
 # 🔹 Uygulama başlat
 if __name__ == "__main__":
